@@ -246,6 +246,12 @@
       <label>汎用加算値 (%)</label>
       <input type="number" id="versatileAdd" value="">
 
+      <span class="tooltip">?<span class="tooltiptext">バフやスキルで変動　不屈バフ1つにつき+20％</span></span>
+      <label>汎用減算値 (%)</label>
+      <input type="number" id="versatileSubtract" value="">
+    </div>
+
+    <div class="formRow">
       <span class="tooltip">?<span class="tooltiptext">カード効果や記憶、パートナーで変動</span></span>
       <label>汎用乗算値 (%)</label>
       <input type="number" id="versatileMul" value="">
@@ -255,7 +261,7 @@
       <label class="checkboxLabel"><input type="checkbox" id="attributeRate"> 有利属性倍率 (+25%)</label>
       <label class="checkboxLabel"><input type="checkbox" id="debuffRate"> 脆弱倍率 (+50%)</label>
       <label class="checkboxLabel"><input type="checkbox" id="damageReduction"> ダメージ軽減 (-25%)</label>
-      <label class="checkboxLabel"><input type="checkbox" id="weakenRate"> 弱体化倍率 (-20%)</label>
+      <label class="checkboxLabel"><input type="checkbox" id="weakenRate"> 弱体化倍率 (-25%)</label>
     </div>
 
     <div class="result" id="cardResult"></div>
@@ -266,30 +272,38 @@
     <h2>ATKベース最終ダメージ計算</h2>
 
     <div class="formRow">
+      <span class="tooltip">?<span class="tooltiptext">上部の計算機で計算可能</span></span>
       <label>最終カード倍率 (%)</label>
       <input type="number" id="atkCardRate" value="">
+      <span class="tooltip">?<span class="tooltiptext">上部の計算機で計算可能</span></span>
       <label>最終攻撃力</label>
       <input type="number" id="atkFinalAtk" value="">
     </div>
 
     <div class="formRow">
+      <span class="tooltip">?<span class="tooltiptext">記憶の欠片【渇望】のメインOPである属性ダメージ量</span></span>
       <label>属性乗算値 (%)</label>
       <input type="number" id="atkAttribute" value="">
+      <span class="tooltip">?<span class="tooltiptext">追加ダメージ量や持続ダメージ量</span></span>
       <label>特殊ダメージ乗算値 (%)</label>
       <input type="number" id="atkSpecial" value="">
     </div>
 
     <div class="formRow">
+      <span class="tooltip">?<span class="tooltiptext">ステータスに表示されている数値から100を引いた値</span></span>
       <label>クリティカルダメージ倍率 (%)</label>
       <input type="number" id="atkCritical" value="">
+      <span class="tooltip">?<span class="tooltiptext">マスクデータのため逆算でしか計算不可能</span></span>
       <label>敵防御係数 (%)</label>
       <input type="number" id="atkDefense" value="">
     </div>
 
     <div class="formRow">
+      <span class="tooltip">?<span class="tooltiptext">65%カットは固定のため編集不可</span></span>
       <label>固定ダメージ減算倍率 (%)</label>
       <!-- 🔒 このフォームのみ固定 -->
       <input type="number" id="atkFixedReduction" value="65" readonly>
+      <span class="tooltip">?<span class="tooltiptext">任意のヒット数を記入</span></span>
       <label>ヒット数</label>
       <input type="number" id="atkHitCount" value="">
     </div>
@@ -331,13 +345,14 @@ function calculate() {
   const latentMul = +document.getElementById("latentMul").value / 100;
   const versatileMul = +document.getElementById("versatileMul").value / 100;
   const versatileAdd = +document.getElementById("versatileAdd").value / 100;
+  const versatileSubtract = +document.getElementById("versatileSubtract").value / 100;
 
   const attributeRate = document.getElementById("attributeRate").checked ? 0.25 : 0;
   const debuffRate = document.getElementById("debuffRate").checked ? 0.5 : 0;
   const damageReduction = document.getElementById("damageReduction").checked ? 0.25 : 0;
-  const weakenRate = document.getElementById("weakenRate").checked ? 0.2 : 0;
+  const weakenRate = document.getElementById("weakenRate").checked ? 0.25 : 0;
 
-  let calcBaseCardRate = ((baseCardRate + latentAdd)*(1+latentMul)*(1+versatileMul) + versatileAdd);
+  let calcBaseCardRate = ((baseCardRate + latentAdd)*(1+latentMul)*(1+versatileMul) + versatileAdd - versatileSubtract);
   let situationMultiplier = (1+attributeRate)*(1+debuffRate)*(1-damageReduction)*(1-weakenRate);
   let finalCardRateValue = calcBaseCardRate * situationMultiplier;
 
