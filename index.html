@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最終攻撃力・カード倍率計算ツール（フラットダークUI）</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+  body {
+    font-family: 'Orbitron', sans-serif;
+    background: #0a0a0f;
+    color: #fff;
+    margin: 0;
+    padding: 1em;
+  }
+
+  h1 {
+    text-align: center;
+    color: #ff6ec7;
+    font-size: 2em;
+    margin-bottom: 1em;
+  }
+
+  h2 {
+    font-size: 1.3em;
+    margin-bottom: 0.5em;
+    color: #7afcff;
+  }
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .section {
+    background: #1b1b2d;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+    flex: 1 1 400px;
+    min-width: 300px;
+  }
+
+  .section.atkDamageSection {
+    flex-basis: 100%;
+  }
+
+  .formRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  label {
+    width: 160px;
+    font-weight: bold;
+    color: #7afcff;
+  }
+
+  input[type="number"] {
+    width: 100px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #7afcff;
+    background: #12121a;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  input[readonly] {
+    background: #222;
+    color: #aaa;
+    cursor: not-allowed;
+  }
+
+  .checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ff6ec7;
+    padding: 6px 10px;
+    border-radius: 12px;
+    border: 1px solid #ff6ec7;
+  }
+
+  .checkboxLabel input[type="checkbox"] {
+    accent-color: #7afcff;
+    width: 20px;
+    height: 20px;
+  }
+
+  .checkboxLabel.checked {
+    background-color: #7afcff;
+    color: #0a0a0f;
+    border-color: #ff6ec7;
+  }
+
+  .tooltip {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    color: #fff;
+    background-color: #ff6ec7;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    text-align: center;
+    line-height: 22px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .tooltiptext {
+    visibility: hidden;
+    width: max-content;
+    max-width: 280px;
+    background-color: #222;
+    color: #7afcff;
+    text-align: left;
+    padding: 6px 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 28px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-size: 13px;
+    border: 1px solid #7afcff;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .result {
+    margin-top: 12px;
+    padding: 16px;
+    background: #12121a;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    font-size: 0.95em;
+    line-height: 1.5em;
+    border: 1px solid #7afcff;
+  }
+
+  .finalValue {
+    font-size: 1.8em;
+    color: #ff6ec7;
+    font-weight: bold;
+    display: inline-block;
+    margin-left: 0.3em;
+  }
+
+  .note {
+    color: #ff4d4f;
+    margin-top: 10px;
+    font-size: 0.9em;
+  }
+
+  @media (max-width: 768px) {
+    .formRow label { width: 140px; }
+    input[type="number"] { width: 80px; }
+  }
+  @media (max-width: 480px) {
+    .formRow { flex-direction: column; align-items: flex-start; }
+    .formRow label { width: 100%; }
+    input[type="number"] { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<h1>最終攻撃力・カード倍率計算ツール</h1>
+
+<div class="container">
+
+  <!-- 最終攻撃力計算 -->
+  <div class="section">
+    <h2>最終攻撃力計算</h2>
+
+    <div class="formRow">
+      <label>基本攻撃力</label>
+      <input type="number" id="baseAttack" value="">
+      <label>攻撃力増加率 (%)</label>
+      <input type="number" id="attackIncreaseRate" value="">
+    </div>
+
+    <div class="formRow">
+      <label>パートナー攻撃力</label>
+      <input type="number" id="partnerAttack" value="">
+      <label>パートナー攻撃力 (%)</label>
+      <input type="number" id="partnerAttackPercent" value="">
+    </div>
+
+    <div class="formRow">
+      <label>記憶固定値</label>
+      <input type="number" id="memoryFixed" value="">
+      <label>愛情固定値</label>
+      <input type="number" id="affectionFixed" value="">
+    </div>
+
+    <div class="formRow">
+      <label>装備攻撃力 (%)</label>
+      <input type="number" id="equipmentAttackPercent" value="">
+      <label>装備攻撃力</label>
+      <input type="number" id="equipmentAttack" value="">
+    </div>
+
+    <div class="note">
+      ※ステータスに表示されている基本攻撃力は愛情固定値が加算済みのため注意
+    </div>
+
+    <div class="result" id="attackResult"></div>
+  </div>
+
+  <!-- 最終カード倍率計算 -->
+  <div class="section">
+    <h2>最終カード倍率計算</h2>
+
+    <div class="formRow">
+      <label>基本倍率 (%)</label>
+      <input type="number" id="baseCardRate" value="">
+    </div>
+
+    <div class="formRow">
+      <span class="tooltip">?<span class="tooltiptext">潜在力強化で一部対象有り</span></span>
+      <label>潜在加算値 (%)</label>
+      <input type="number" id="latentAdd" value="">
+
+      <span class="tooltip">?<span class="tooltiptext">基礎、固有、共有カードの強化によって変動</span></span>
+      <label>潜在乗算値 (%)</label>
+      <input type="number" id="latentMul" value="">
+    </div>
+
+    <div class="formRow">
+      <span class="tooltip">?<span class="tooltiptext">バフやスキルで変動　士気バフ1つにつき+20％</span></span>
+      <label>汎用加算値 (%)</label>
+      <input type="number" id="versatileAdd" value="">
+
+      <span class="tooltip">?<span class="tooltiptext">カード効果や記憶、パートナーで変動</span></span>
+      <label>汎用乗算値 (%)</label>
+      <input type="number" id="versatileMul" value="">
+    </div>
+
+    <div class="formRow">
+      <label class="checkboxLabel"><input type="checkbox" id="attributeRate"> 有利属性倍率 (+25%)</label>
+      <label class="checkboxLabel"><input type="checkbox" id="debuffRate"> 脆弱倍率 (+50%)</label>
+      <label class="checkboxLabel"><input type="checkbox" id="damageReduction"> ダメージ軽減 (-25%)</label>
+      <label class="checkboxLabel"><input type="checkbox" id="weakenRate"> 弱体化倍率 (-20%)</label>
+    </div>
+
+    <div class="result" id="cardResult"></div>
+  </div>
+
+  <!-- ✅ ATKベース最終ダメージ計算 -->
+  <div class="section atkDamageSection">
+    <h2>ATKベース最終ダメージ計算</h2>
+
+    <div class="formRow">
+      <label>最終カード倍率 (%)</label>
+      <input type="number" id="atkCardRate" value="">
+      <label>最終攻撃力</label>
+      <input type="number" id="atkFinalAtk" value="">
+    </div>
+
+    <div class="formRow">
+      <label>属性乗算値 (%)</label>
+      <input type="number" id="atkAttribute" value="">
+      <label>特殊ダメージ乗算値 (%)</label>
+      <input type="number" id="atkSpecial" value="">
+    </div>
+
+    <div class="formRow">
+      <label>クリティカルダメージ倍率 (%)</label>
+      <input type="number" id="atkCritical" value="">
+      <label>敵防御係数 (%)</label>
+      <input type="number" id="atkDefense" value="">
+    </div>
+
+    <div class="formRow">
+      <label>固定ダメージ減算倍率 (%)</label>
+      <!-- 🔒 このフォームのみ固定 -->
+      <input type="number" id="atkFixedReduction" value="65" readonly>
+      <label>ヒット数</label>
+      <input type="number" id="atkHitCount" value="">
+    </div>
+
+    <div class="result" id="atkDamageResult"></div>
+  </div>
+
+</div>
+
+<script>
+function calculate() {
+  const baseAttack = +document.getElementById("baseAttack").value;
+  const attackIncreaseRate = +document.getElementById("attackIncreaseRate").value / 100;
+  const partnerAttack = +document.getElementById("partnerAttack").value;
+  const memoryFixed = +document.getElementById("memoryFixed").value;
+  const affectionFixed = +document.getElementById("affectionFixed").value;
+  const partnerAttackPercent = +document.getElementById("partnerAttackPercent").value / 100;
+  const equipmentAttackPercent = +document.getElementById("equipmentAttackPercent").value / 100;
+  const equipmentAttack = +document.getElementById("equipmentAttack").value;
+
+  const baseTotalAttack = Math.floor(
+    baseAttack * (1 + attackIncreaseRate) +
+    partnerAttack +
+    memoryFixed +
+    affectionFixed
+  );
+  const baseAttackMultiplier = 1 + partnerAttackPercent + equipmentAttackPercent;
+  const finalAttack = Math.round(baseTotalAttack * baseAttackMultiplier + equipmentAttack);
+
+  document.getElementById("attackResult").innerHTML = `
+    <strong>基礎攻撃力:</strong> ${isNaN(baseTotalAttack)?'-':baseTotalAttack.toFixed(0)}<br>
+    <strong>基礎攻撃乗算値:</strong> ${isNaN(baseAttackMultiplier)?'-':(baseAttackMultiplier*100).toFixed(1)}%<br>
+    <strong>固定攻撃力:</strong> ${isNaN(equipmentAttack)?'-':equipmentAttack.toFixed(0)}<br>
+    <strong>最終攻撃力:</strong> <span class="finalValue">${isNaN(finalAttack)?'-':finalAttack.toFixed(0)}</span>
+  `;
+
+  const baseCardRate = +document.getElementById("baseCardRate").value / 100;
+  const latentAdd = +document.getElementById("latentAdd").value / 100;
+  const latentMul = +document.getElementById("latentMul").value / 100;
+  const versatileMul = +document.getElementById("versatileMul").value / 100;
+  const versatileAdd = +document.getElementById("versatileAdd").value / 100;
+
+  const attributeRate = document.getElementById("attributeRate").checked ? 0.25 : 0;
+  const debuffRate = document.getElementById("debuffRate").checked ? 0.5 : 0;
+  const damageReduction = document.getElementById("damageReduction").checked ? 0.25 : 0;
+  const weakenRate = document.getElementById("weakenRate").checked ? 0.2 : 0;
+
+  let calcBaseCardRate = ((baseCardRate + latentAdd)*(1+latentMul)*(1+versatileMul) + versatileAdd);
+  let situationMultiplier = (1+attributeRate)*(1+debuffRate)*(1-damageReduction)*(1-weakenRate);
+  let finalCardRateValue = calcBaseCardRate * situationMultiplier;
+
+  document.getElementById("cardResult").innerHTML = `
+    <strong>計算後基本カード倍率:</strong> ${isNaN(calcBaseCardRate)?'-':(calcBaseCardRate*100).toFixed(2)}%<br>
+    <strong>状況補正乗算値:</strong> ${isNaN(situationMultiplier)?'-':(situationMultiplier*100).toFixed(2)}%<br>
+    <strong>最終カード倍率:</strong> <span class="finalValue">${isNaN(finalCardRateValue)?'-':(finalCardRateValue*100).toFixed(2)}%</span>
+  `;
+
+  const atkCardRate = +document.getElementById("atkCardRate").value / 100;
+  const atkFinalAtk = +document.getElementById("atkFinalAtk").value;
+  const atkAttribute = +document.getElementById("atkAttribute").value / 100;
+  const atkSpecial = +document.getElementById("atkSpecial").value / 100;
+  const atkCritical = +document.getElementById("atkCritical").value / 100;
+  const atkDefense = +document.getElementById("atkDefense").value / 100;
+  const atkFixedReduction = +document.getElementById("atkFixedReduction").value / 100;
+  const atkHitCount = +document.getElementById("atkHitCount").value;
+
+  const normalSingle =
+    atkFinalAtk *
+    atkCardRate *
+    (1 + atkAttribute) *
+    (1 + atkSpecial) *
+    (1 - atkDefense) *
+    (1 - atkFixedReduction);
+
+  const criticalSingle =
+    atkFinalAtk *
+    atkCardRate *
+    (1 + atkAttribute) *
+    (1 + atkSpecial) *
+    (1 + atkCritical) *
+    (1 - atkDefense) *
+    (1 - atkFixedReduction);
+
+  const normalMulti = normalSingle * atkHitCount;
+  const criticalMulti = criticalSingle * atkHitCount;
+
+  document.getElementById("atkDamageResult").innerHTML = `
+    <strong>通常ダメージ（単発）:</strong> <span class="finalValue">${isNaN(normalSingle)?'-':Math.round(normalSingle)}</span><br>
+    <strong>クリティカルダメージ（単発）:</strong> <span class="finalValue">${isNaN(criticalSingle)?'-':Math.round(criticalSingle)}</span><br>
+    <strong>通常ダメージ（複数ヒット）:</strong> <span class="finalValue">${isNaN(normalMulti)?'-':Math.round(normalMulti)}</span><br>
+    <strong>クリティカルダメージ（複数ヒット）:</strong> <span class="finalValue">${isNaN(criticalMulti)?'-':Math.round(criticalMulti)}</span>
+  `;
+}
+
+document.querySelectorAll(".checkboxLabel input[type=checkbox]").forEach(checkbox => {
+  checkbox.addEventListener("change", function() {
+    if (this.checked) this.parentElement.classList.add("checked");
+    else this.parentElement.classList.remove("checked");
+    calculate();
+  });
+});
+
+document.querySelectorAll("input[type=number]").forEach(input => input.addEventListener("input", calculate));
+window.addEventListener("DOMContentLoaded", calculate);
+</script>
+
+</body>
+</html>
