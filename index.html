@@ -189,30 +189,30 @@
 
     <div class="formRow">
       <label>基本攻撃力</label>
-      <input type="number" id="baseAttack" value="">
+      <input type="number" id="baseAttack">
       <label>攻撃力増加率 (%)</label>
-      <input type="number" id="attackIncreaseRate" value="">
+      <input type="number" id="attackIncreaseRate">
     </div>
 
     <div class="formRow">
       <label>パートナー攻撃力</label>
-      <input type="number" id="partnerAttack" value="">
+      <input type="number" id="partnerAttack">
       <label>パートナー攻撃力 (%)</label>
-      <input type="number" id="partnerAttackPercent" value="">
+      <input type="number" id="partnerAttackPercent">
     </div>
 
     <div class="formRow">
       <label>記憶固定値</label>
-      <input type="number" id="memoryFixed" value="">
+      <input type="number" id="memoryFixed">
       <label>愛情固定値</label>
-      <input type="number" id="affectionFixed" value="">
+      <input type="number" id="affectionFixed">
     </div>
 
     <div class="formRow">
       <label>装備攻撃力 (%)</label>
-      <input type="number" id="equipmentAttackPercent" value="">
+      <input type="number" id="equipmentAttackPercent">
       <label>装備攻撃力</label>
-      <input type="number" id="equipmentAttack" value="">
+      <input type="number" id="equipmentAttack">
     </div>
 
     <div class="note">
@@ -228,33 +228,33 @@
 
     <div class="formRow">
       <label>基本倍率 (%)</label>
-      <input type="number" id="baseCardRate" value="">
+      <input type="number" id="baseCardRate">
     </div>
 
     <div class="formRow">
       <span class="tooltip">?<span class="tooltiptext">潜在力強化で一部対象有り</span></span>
       <label>潜在加算値 (%)</label>
-      <input type="number" id="latentAdd" value="">
+      <input type="number" id="latentAdd">
 
       <span class="tooltip">?<span class="tooltiptext">基礎、固有、共有カードの強化によって変動</span></span>
       <label>潜在乗算値 (%)</label>
-      <input type="number" id="latentMul" value="">
+      <input type="number" id="latentMul">
     </div>
 
     <div class="formRow">
       <span class="tooltip">?<span class="tooltiptext">バフやスキルで変動　士気バフ1つにつき+20％</span></span>
       <label>汎用加算値 (%)</label>
-      <input type="number" id="versatileAdd" value="">
+      <input type="number" id="versatileAdd">
 
       <span class="tooltip">?<span class="tooltiptext">バフやスキルで変動　不屈バフ1つにつき+20％</span></span>
       <label>汎用減算値 (%)</label>
-      <input type="number" id="versatileSubtract" value="">
+      <input type="number" id="versatileSubtract">
     </div>
 
     <div class="formRow">
       <span class="tooltip">?<span class="tooltiptext">カード効果や記憶、パートナーで変動</span></span>
       <label>汎用乗算値 (%)</label>
-      <input type="number" id="versatileMul" value="">
+      <input type="number" id="versatileMul">
     </div>
 
     <div class="formRow">
@@ -271,45 +271,54 @@
     <div class="result" id="cardResult"></div>
   </div>
 
-  <!-- ✅ ATKベース最終ダメージ計算 -->
+  <!-- ATKベース最終ダメージ計算 -->
   <div class="section atkDamageSection">
     <h2>ATKベース最終ダメージ計算</h2>
 
     <div class="formRow">
       <span class="tooltip">?<span class="tooltiptext">上部の計算機で計算可能</span></span>
       <label>最終カード倍率 (%)</label>
-      <input type="number" id="atkCardRate" value="">
+      <input type="number" id="atkCardRate">
+
       <span class="tooltip">?<span class="tooltiptext">上部の計算機で計算可能</span></span>
       <label>最終攻撃力</label>
-      <input type="number" id="atkFinalAtk" value="">
+      <input type="number" id="atkFinalAtk">
     </div>
 
     <div class="formRow">
-      <span class="tooltip">?<span class="tooltiptext">記憶の欠片【渇望】のメインOPである属性ダメージ量</span></span>
+      <span class="tooltip">?<span class="tooltiptext">属性ダメージ量</span></span>
       <label>属性乗算値 (%)</label>
-      <input type="number" id="atkAttribute" value="">
+      <input type="number" id="atkAttribute">
+
       <span class="tooltip">?<span class="tooltiptext">追加ダメージ量や持続ダメージ量</span></span>
       <label>特殊ダメージ乗算値 (%)</label>
-      <input type="number" id="atkSpecial" value="">
+      <input type="number" id="atkSpecial">
     </div>
 
     <div class="formRow">
-      <span class="tooltip">?<span class="tooltiptext">ステータスに表示されている数値から100を引いた値</span></span>
+      <span class="tooltip">?<span class="tooltiptext">ステータスに表示されている値 - 100</span></span>
       <label>クリティカルダメージ倍率 (%)</label>
-      <input type="number" id="atkCritical" value="">
-      <span class="tooltip">?<span class="tooltiptext">マスクデータのため逆算でしか計算不可能</span></span>
-      <label>敵防御係数 (%)</label>
-      <input type="number" id="atkDefense" value="">
+      <input type="number" id="atkCritical">
+
+      <span class="tooltip">?<span class="tooltiptext">クリティカルが発生する確率（0〜100%）</span></span>
+      <label>クリティカル率 (%)</label>
+      <input type="number" id="atkCriticalRate" min="0" max="100">
     </div>
 
     <div class="formRow">
-      <span class="tooltip">?<span class="tooltiptext">65%カットは固定のため編集不可</span></span>
-      <label>固定ダメージ減算倍率 (%)</label>
-      <!-- 🔒 このフォームのみ固定 -->
+      <span class="tooltip">?<span class="tooltiptext">マスクデータのため逆算で計算</span></span>
+      <label>敵防御係数 (%)</label>
+      <input type="number" id="atkDefense">
+
+      <span class="tooltip">?<span class="tooltiptext">65%固定</span></span>
+      <label>固定ダメージ減算 (%)</label>
       <input type="number" id="atkFixedReduction" value="65" readonly>
-      <span class="tooltip">?<span class="tooltiptext">任意のヒット数を記入</span></span>
+    </div>
+
+    <div class="formRow">
+      <span class="tooltip">?<span class="tooltiptext">任意のヒット数を入力</span></span>
       <label>ヒット数</label>
-      <input type="number" id="atkHitCount" value="">
+      <input type="number" id="atkHitCount">
     </div>
 
     <div class="result" id="atkDamageResult"></div>
@@ -338,10 +347,10 @@ function calculate() {
   const finalAttack = Math.round(baseTotalAttack * baseAttackMultiplier + equipmentAttack);
 
   document.getElementById("attackResult").innerHTML = `
-    <strong>基礎攻撃力:</strong> ${isNaN(baseTotalAttack)?'-':baseTotalAttack.toFixed(0)}<br>
+    <strong>基礎攻撃力:</strong> ${isNaN(baseTotalAttack)?'-':baseTotalAttack}<br>
     <strong>基礎攻撃乗算値:</strong> ${isNaN(baseAttackMultiplier)?'-':(baseAttackMultiplier*100).toFixed(1)}%<br>
-    <strong>固定攻撃力:</strong> ${isNaN(equipmentAttack)?'-':equipmentAttack.toFixed(0)}<br>
-    <strong>最終攻撃力:</strong> <span class="finalValue">${isNaN(finalAttack)?'-':finalAttack.toFixed(0)}</span>
+    <strong>固定攻撃力:</strong> ${isNaN(equipmentAttack)?'-':equipmentAttack}<br>
+    <strong>最終攻撃力:</strong> <span class="finalValue">${isNaN(finalAttack)?'-':finalAttack}</span>
   `;
 
   const baseCardRate = +document.getElementById("baseCardRate").value / 100;
@@ -371,6 +380,7 @@ function calculate() {
   const atkAttribute = +document.getElementById("atkAttribute").value / 100;
   const atkSpecial = +document.getElementById("atkSpecial").value / 100;
   const atkCritical = +document.getElementById("atkCritical").value / 100;
+  const atkCriticalRate = Math.min(1, Math.max(0, +document.getElementById("atkCriticalRate").value / 100));
   const atkDefense = +document.getElementById("atkDefense").value / 100;
   const atkFixedReduction = +document.getElementById("atkFixedReduction").value / 100;
   const atkHitCount = +document.getElementById("atkHitCount").value;
@@ -395,11 +405,20 @@ function calculate() {
   const normalMulti = normalSingle * atkHitCount;
   const criticalMulti = criticalSingle * atkHitCount;
 
+  const avgSingle =
+    normalSingle * (1 - atkCriticalRate) +
+    criticalSingle * atkCriticalRate;
+
+  const avgMulti = avgSingle * atkHitCount;
+
   document.getElementById("atkDamageResult").innerHTML = `
     <strong>通常ダメージ（単発）:</strong> <span class="finalValue">${isNaN(normalSingle)?'-':Math.round(normalSingle)}</span><br>
     <strong>クリティカルダメージ（単発）:</strong> <span class="finalValue">${isNaN(criticalSingle)?'-':Math.round(criticalSingle)}</span><br>
+    <strong>平均ダメージ（単発）:</strong> <span class="finalValue">${isNaN(avgSingle)?'-':Math.round(avgSingle)}</span><br><br>
+
     <strong>通常ダメージ（複数ヒット）:</strong> <span class="finalValue">${isNaN(normalMulti)?'-':Math.round(normalMulti)}</span><br>
-    <strong>クリティカルダメージ（複数ヒット）:</strong> <span class="finalValue">${isNaN(criticalMulti)?'-':Math.round(criticalMulti)}</span>
+    <strong>クリティカルダメージ（複数ヒット）:</strong> <span class="finalValue">${isNaN(criticalMulti)?'-':Math.round(criticalMulti)}</span><br>
+    <strong>平均ダメージ（複数ヒット）:</strong> <span class="finalValue">${isNaN(avgMulti)?'-':Math.round(avgMulti)}</span>
   `;
 }
 
@@ -411,7 +430,10 @@ document.querySelectorAll(".checkboxLabel input[type=checkbox]").forEach(checkbo
   });
 });
 
-document.querySelectorAll("input[type=number]").forEach(input => input.addEventListener("input", calculate));
+document.querySelectorAll("input[type=number]").forEach(input =>
+  input.addEventListener("input", calculate)
+);
+
 window.addEventListener("DOMContentLoaded", calculate);
 </script>
 
